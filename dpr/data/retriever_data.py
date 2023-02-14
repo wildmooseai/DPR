@@ -1,6 +1,7 @@
 import collections
 import csv
 import json
+import shutil
 import logging
 import pickle
 from typing import Dict, List
@@ -272,7 +273,9 @@ class CsvCtxSrc(RetrieverData):
         logger.info("Reading file %s", self.file)
         with open(self.file) as ifile:
             reader = csv.reader(ifile, delimiter="\t")
-            for row in reader:
+            for i,row in enumerate(reader):
+                if i >= 1000:
+                    break
                 # for row in ifile:
                 # row = row.strip().split("\t")
                 if row[self.id_col] == "id":
@@ -281,9 +284,11 @@ class CsvCtxSrc(RetrieverData):
                     sample_id = self.id_prefix + str(row[self.id_col])
                 else:
                     sample_id = row[self.id_col]
-                passage = row[self.text_col].strip('"')
+                passage = row[self.text_col]#.strip('"')
                 if self.normalize:
                     passage = normalize_passage(passage)
+                passage = passage.replace("\\r", "")
+                passage = passage.replace("\\n", "\n")
                 ctxs[sample_id] = BiEncoderPassage(passage, row[self.title_col])
 
 

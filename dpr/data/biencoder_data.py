@@ -1,6 +1,7 @@
 import collections
 import glob
 import logging
+import shutil
 import os
 import random
 from typing import Dict, List, Tuple
@@ -22,7 +23,8 @@ def get_dpr_files(source_name) -> List[str]:
     else:
         # try to use data downloader
         from dpr.data.download_data import download
-        return download(source_name)
+        d = download(source_name)
+        return d
 
 
 class BiEncoderSample(object):
@@ -173,10 +175,11 @@ class JsonlQADataset(JsonQADataset):
 
 def normalize_passage(ctx_text: str):
     ctx_text = ctx_text.replace("\n", " ").replace("’", "'")
-    if ctx_text.startswith('"'):
-        ctx_text = ctx_text[1:]
-    if ctx_text.endswith('"'):
-        ctx_text = ctx_text[:-1]
+	
+    #if ctx_text.startswith('"'):
+    #    ctx_text = ctx_text[1:]
+    #if ctx_text.endswith('"'):
+    #    ctx_text = ctx_text[:-1]
     return ctx_text
 
 

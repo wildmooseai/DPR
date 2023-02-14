@@ -13,6 +13,7 @@ import argparse
 import gzip
 import logging
 import os
+import shutil
 import pathlib
 import wget
 
@@ -393,12 +394,15 @@ RESOURCES_MAP = {
 
 def unpack(gzip_file: str, out_file: str):
     logger.info("Uncompressing %s", gzip_file)
-    input = gzip.GzipFile(gzip_file, "rb")
-    s = input.read()
-    input.close()
-    output = open(out_file, "wb")
-    output.write(s)
-    output.close()
+#    input = gzip.GzipFile(gzip_file, "rb")
+#    s = input.read()
+#    input.close()
+#    output = open(out_file, "wb")
+#    output.write(s)
+#    output.close()
+    with gzip.open(gzip_file, 'rb') as f_in:
+        with open(out_file, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
     logger.info(" Saved to %s", out_file)
 
 
